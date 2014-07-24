@@ -66,7 +66,7 @@ net.createServer(function (socket) {
         }
         catch(err)
         {
-          socket.destory();
+          socket.destroy();
         }
       }
     }
@@ -99,7 +99,7 @@ net.createServer(function (socket) {
     {
       socket.clients.forEach(function (client)
       {
-        client.destory();
+        client.destroy();
       });
        delete servers[socket];
 

@@ -67,6 +67,7 @@ console.log(socket.name +":"+data);
         }
         catch(err)
         {
+          console.log(err);
           console.log("cant find server:"+json.targetID);
           socket.destroy();
         }

@@ -1,0 +1,49 @@
+var express = require('express')
+	, app = express()
+  	, server = require('http').createServer(app)
+  	, io = require('socket.io').listen(server,{ log: false });
+
+var port = process.env.PORT || 5566;
+
+
+//server
+server.listen(port);
+
+//send game index.html
+app.use(express.favicon());
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/client/hello.html');
+});
+
+io.sockets.on('connection', function (socket) {
+
+    console.log("connected");
+  	socket.emit('clientConnect', { message: 'connect success!' });
+
+/*
+  	//broadcast(except current socket) to add player
+  	socket.broadcast.emit('newClientConnect', { id:socket.id,message: 'new client connect!' });
+
+  	socket.on('clientStateChange', function (data) {
+  		//broadcast(except current socket) to update players states
+  		socket.broadcast.emit('otherClientStateChange', { id:socket.id,state:data });
+  	});
+
+    socket.on('clientDialogChange',function(data)
+    {
+       socket.broadcast.emit('otherClientDialogChange', { id:socket.id,state:data });
+
+    });
+
+    socket.on('clientSendInstruction', function (data) {
+      //broadcast(except current socket) to update players instruction
+      socket.broadcast.emit('otherClientSendInstruction', { id:socket.id,state:data });
+    });
+
+  	//disconnect
+  	socket.on('disconnect',function(){
+  		console.log(socket.id+' disconnect!');
+  		socket.broadcast.emit('newClientDisconnect', { id:socket.id,message: "one client disconnect!"});
+  	});*/
+
+});

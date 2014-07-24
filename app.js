@@ -70,9 +70,7 @@ net.createServer(function (socket) {
         }
       }
     }
-
-
-    if(socket.isClient)
+    else if(socket.isClient)
     {
       socket.server.write(data);
     }

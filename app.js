@@ -2,8 +2,8 @@ var express = require('express')
 	, app = express()
   	, server = require('http').createServer(app);
 
-var port = process.env.PORT || 5566;
-
+var port = 5566;
+var proxyPort = 5567;
 
 //server
 server.listen(port);
@@ -18,46 +18,97 @@ app.get('/', function (req, res) {
 net = require('net');
  
 // Keep track of the chat clients
-var clients = [];
- 
+var servers = {};
+
 // Start a TCP Server
 net.createServer(function (socket) {
  
   // Identify this client
-  socket.name = socket.remoteAddress + ":" + socket.remotePort 
+  socket.name = socket.remoteAddress + ":" + socket.remotePort;
+
+  socket.write('{"command":"test"}\n');
+  console.log("Connected : "+socket.name);
  
-  // Put this new client in the list
-  clients.push(socket);
- 
-  // Send a nice welcome message and announce
-  socket.write("Welcome " + socket.name + "\n");
-  broadcast(socket.name + " joined the chat\n", socket);
- 
-  // Handle incoming messages from clients.
   socket.on('data', function (data) {
 
+    if(socket.proxy != true)
+    {
+      try
+      {
+        var json = JSON.parse(data);
+      }
+      catch(err)
+      {
+        console.log("[Error]"+socket.name+" sent non json data:"+data);
+        return;
+      }
+
+
+      if(json.command == "CreateProxyServer")
+      {
+        socket.id = json.id;
+        socket.proxy = true;
+        socket.isServer = true;
+        socket.clients = [];
+        servers[socket.id]=socket;
+        console.log("CreateProxyServer");
+        console.log("servers:"+servers);
+      }
+      else if(json.command == "ProxyToTarget")
+      {
+        try
+        {
+        socket.id = json.id;
+        socket.proxy = true;
+        socket.isClient = true;
+        socket.targetID = json.targetID;
+        socket.server = servers[targetID];
+        }
+        catch(err)
+        {
+          socket.destory();
+        }
+      }
+    }
+
+
+    if(socket.isClient)
+    {
+      socket.server.write(data);
+    }
+    else if(socket.isServer)
+    {
+      socket.clients.forEach(function (client)
+      {
+        client.write(data);
+      });
+    }
+    else
+    {
+      console.log("[Error] Weird Command");
+    }
+
     console.log(socket.name +":"+data);
-    broadcast(socket.name + "> " + data, socket);
   });
  
-  // Remove the client from the list when it leaves
   socket.on('end', function () {
-    clients.splice(clients.indexOf(socket), 1);
-    broadcast(socket.name + " left the chat.\n");
+
+    console.log("Disconnected : "+socket.name);
+
+    if(socket.isServer)
+    {
+      socket.clients.forEach(function (client)
+      {
+        client.destory();
+      });
+       delete servers[socket];
+
+       console.log("servers:"+servers);
+    }
+
+
   });
-  
-  // Send a message to all clients
-  function broadcast(message, sender) {
-    clients.forEach(function (client) {
-      // Don't want to send it to sender
-      if (client === sender) return;
-      client.write(message);
-    });
-    // Log it to the server output too
-    process.stdout.write(message)
-  }
  
-}).listen(5000);
+}).listen(proxyPort);
  
-// Put a friendly message on the terminal of the server.
-console.log("Chat server running at port 5000\n");
+console.log("Proxy server running at port " + proxyPort);

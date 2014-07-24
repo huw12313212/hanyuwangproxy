@@ -68,6 +68,7 @@ console.log(socket.name +":"+data);
         }
         catch(err)
         {
+          console.log("cant find targetID:"+json.targetID);
           socket.destroy();
         }
       }

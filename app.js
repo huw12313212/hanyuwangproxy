@@ -53,7 +53,7 @@ console.log(socket.name +":"+data);
         socket.isServer = true;
         socket.clients = [];
         console.log("Add Server \""+socket.id+"\"");
-        servers[socket.id]=socket;
+        servers[socket.id.toString()]=socket;
       }
       else if(json.command == "ProxyToTarget")
       {
@@ -63,7 +63,7 @@ console.log(socket.name +":"+data);
         socket.proxy = true;
         socket.isClient = true;
         socket.targetID = json.targetID;
-        socket.server = servers[targetID];
+        socket.server = servers[targetID.toString()];
         }
         catch(err)
         {

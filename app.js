@@ -31,6 +31,8 @@ net.createServer(function (socket) {
  
   socket.on('data', function (data) {
 
+console.log(socket.name +":"+data);
+
     if(socket.proxy != true)
     {
       try
@@ -86,7 +88,7 @@ net.createServer(function (socket) {
       console.log("[Error] Weird Command");
     }
 
-    console.log(socket.name +":"+data);
+    
   });
  
   socket.on('end', function () {

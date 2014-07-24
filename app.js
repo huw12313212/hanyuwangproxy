@@ -52,7 +52,7 @@ console.log(socket.name +":"+data);
         socket.proxy = true;
         socket.isServer = true;
         socket.clients = [];
-        console.log("Add Server "+socket.id);
+        console.log("Add Server \""+socket.id+"\"");
         servers[socket.id]=socket;
       }
       else if(json.command == "ProxyToTarget")
@@ -68,7 +68,7 @@ console.log(socket.name +":"+data);
         catch(err)
         {
           console.log(err);
-          console.log("cant find server:"+json.targetID);
+          console.log("cant find server:\""+json.targetID+"\"");
           socket.destroy();
         }
       }

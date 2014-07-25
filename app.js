@@ -36,8 +36,7 @@ net.createServer(function (socket) {
       datas.forEach(function(data)
       {
 
-        if(data.length < 3) return;
-
+        if(data.length < 2) return;
        var json;
       try
       {
@@ -75,6 +74,7 @@ net.createServer(function (socket) {
         socket.server.clients.push(socket);
 
         var command={};
+        command.proxyCommand = "ProxyConnected";
         command.connectID = json.id;
 
           socket.server.write(JSON.stringify(command)+"\n");
@@ -94,6 +94,7 @@ net.createServer(function (socket) {
       command.connectID = socket.id;
       command.data = json;
 
+      console.log("write to Server:"+JSON.stringify(command));
       socket.server.write(JSON.stringify(command)+"\n");
     }
     else if(socket.isServer)
@@ -102,11 +103,13 @@ net.createServer(function (socket) {
       {
           socket.clients.forEach(function (client)
           {
+            console.log("[broadcast]write to client:"+json.data);
             client.write(JSON.stringify(json.data)+"\n");
           });
       }
       else if(data.proxyCommand == "sendTo")
       {
+         console.log("write data:"+json.data);
           socket.clients[json.index].write(JSON.stringify(json.data)+"\n");
       }
     }

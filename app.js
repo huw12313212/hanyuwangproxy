@@ -31,8 +31,6 @@ net.createServer(function (socket) {
 
 console.log(socket.name +":"+data);
 
-    if(socket.proxy != true)
-    {
 
       var json;
       try
@@ -44,6 +42,10 @@ console.log(socket.name +":"+data);
         console.log("[Error]"+socket.name+" sent non json data:"+data);
         return;
       }
+
+    if(socket.proxy != true)
+    {
+
 
       if(json.command == "CreateProxyServer")
       {

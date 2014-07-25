@@ -31,7 +31,7 @@ net.createServer(function (socket) {
 
       console.log(socket.name +":"+data);
 
-      var datas = data.split("\n");
+      var datas = data.toString().split("\n");
 
       datas.forEach(function(data)
       {

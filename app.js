@@ -80,7 +80,7 @@ console.log(socket.name +":"+data);
     }
     else if(socket.isClient)
     {
-      console.log("write data:"+data);
+      
 
       var command={};
       command.proxyCommand = "ReceiveFrom";
@@ -88,7 +88,7 @@ console.log(socket.name +":"+data);
       command.data = data;
 
       console.log("write to Server:"+data.data);
-      socket.server.write(data+"\n");
+      socket.server.write(JSON.stringify(command)+"\n");
     }
     else if(socket.isServer)
     {

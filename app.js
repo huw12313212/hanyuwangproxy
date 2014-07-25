@@ -103,13 +103,11 @@ net.createServer(function (socket) {
       {
           socket.clients.forEach(function (client)
           {
-            console.log("[broadcast]write to client:"+json.data);
             client.write(JSON.stringify(json.data)+"\n");
           });
       }
       else if(data.proxyCommand == "sendTo")
       {
-         console.log("write data:"+json.data);
           socket.clients[json.index].write(JSON.stringify(json.data)+"\n");
       }
     }
@@ -138,6 +136,15 @@ net.createServer(function (socket) {
        delete servers[socket];
 
        console.log("servers:"+servers);
+    }
+
+    if(socket.isClient)
+    {
+      var index = socket.server.clients.indexOf(socket);
+     if (index > -1) 
+     {
+      socket.server.clients.splice(index, 1);
+      }
     }
 
 

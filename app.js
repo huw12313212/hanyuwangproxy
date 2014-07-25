@@ -65,7 +65,7 @@ console.log(socket.name +":"+data);
 
         var command={};
         command.proxyCommand = "ProxyConnected";
-        command.Connected = json.id;
+        command.connectID = json.id;
 
           socket.server.write(JSON.stringify(command)+"\n");
         }

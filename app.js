@@ -55,7 +55,7 @@ net.createServer(function (socket) {
 
       if(json.command == "CreateProxyServer")
       {
-        socket.id = json.id;
+        socket.id = json.id.toString();
         socket.proxy = true;
         socket.isServer = true;
         socket.clients = [];
@@ -66,7 +66,7 @@ net.createServer(function (socket) {
       {
         try
         {
-        socket.id = json.id;
+        socket.id = json.id.toString();
         socket.proxy = true;
         socket.isClient = true;
         socket.targetID = json.targetID;

@@ -98,7 +98,7 @@ console.log(socket.name +":"+data);
       {
           socket.clients.forEach(function (client)
           {
-            console.log("write data:"+data.data);
+            console.log("[broadcast]write data:"+data.data);
             client.write(data.data+"\n");
           });
       }

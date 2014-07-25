@@ -54,6 +54,8 @@ console.log(socket.name +":"+data);
       }
       else if(json.command == "ProxyToTarget")
       {
+        var json = JSON.parse(data);
+
         try
         {
         socket.id = json.id;
@@ -80,24 +82,26 @@ console.log(socket.name +":"+data);
     }
     else if(socket.isClient)
     {
-      
+       var json = JSON.parse(data);
 
       var command={};
       command.proxyCommand = "ReceiveFrom";
       command.connectID = socket.id;
-      command.data = data;
+      command.data = json;
 
       console.log("write to Server:"+data.data);
       socket.server.write(JSON.stringify(command)+"\n");
     }
     else if(socket.isServer)
     {
+      var json = JSON.parse(data);
+
       if(data.proxyCommand == "broadcast")
       {
           socket.clients.forEach(function (client)
           {
             console.log("[broadcast]write to client:"+data.data);
-            client.write(data.data+"\n");
+            client.write(json.data+"\n");
           });
       }
       else if(data.proxyCommand == "sendTo")

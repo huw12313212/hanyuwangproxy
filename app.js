@@ -26,9 +26,6 @@ net.createServer(function (socket) {
   // Identify this client
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
 
-  socket.write("hello world\n");
-    socket.write("hello world\n");
-      socket.write("hello world\n");
   console.log("Connected : "+socket.name);
  
   socket.on('data', function (data) {
@@ -46,7 +43,6 @@ console.log(socket.name +":"+data);
         console.log("[Error]"+socket.name+" sent non json data:"+data);
         return;
       }
-
 
       if(json.command == "CreateProxyServer")
       {
@@ -81,10 +77,19 @@ console.log(socket.name +":"+data);
     }
     else if(socket.isServer)
     {
-      socket.clients.forEach(function (client)
+      if(data.proxyCommand == "broadcast")
       {
-        client.write(data);
-      });
+          socket.clients.forEach(function (client)
+          {
+            client.write(data.data);
+          });
+      }
+      else if(data.proxyCommand == "sendTo")
+      {
+          socket.clients[data.index].write(data.data);
+      }
+
+      
     }
     else
     {

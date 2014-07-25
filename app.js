@@ -31,8 +31,13 @@ net.createServer(function (socket) {
 
       console.log(socket.name +":"+data);
 
+      var datas = data.split("\n");
 
-      var json;
+      datas.forEach(function(data)
+      {
+
+
+  var json;
       try
       {
         json = JSON.parse(data);
@@ -84,7 +89,6 @@ net.createServer(function (socket) {
     }
     else if(socket.isClient)
     {
-      
       var command={};
       command.proxyCommand = "ReceiveFrom";
       command.connectID = socket.id;
@@ -113,6 +117,11 @@ net.createServer(function (socket) {
     {
       console.log("[Error] Weird Command");
     }
+
+
+      });
+
+    
 
   });
  

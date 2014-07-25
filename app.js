@@ -108,7 +108,7 @@ net.createServer(function (socket) {
       }
       else if(json.proxyCommand == "sendTo")
       {
-          socket.clients[json.index].write(JSON.stringify(json.data)+"\n");
+          socket.clients.get(json.index).write(JSON.stringify(json.data)+"\n");
       }
     }
     else

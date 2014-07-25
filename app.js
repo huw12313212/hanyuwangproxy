@@ -26,7 +26,7 @@ net.createServer(function (socket) {
   // Identify this client
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
 
-  socket.write('{"command":"test"}\n');
+  socket.write("hello world\n");
   console.log("Connected : "+socket.name);
  
   socket.on('data', function (data) {

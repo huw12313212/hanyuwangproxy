@@ -37,7 +37,7 @@ net.createServer(function (socket) {
       {
 
         if(data.length < 2) return;
-        
+
        var json;
       try
       {
@@ -105,7 +105,7 @@ net.createServer(function (socket) {
           socket.clients.forEach(function (client)
           {
             console.log("[broadcast]write to client:"+json.data);
-            client.write(JSON.stringify(json.data)+"\n");
+            client.write("test\n");
           });
       }
       else if(data.proxyCommand == "sendTo")

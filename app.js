@@ -27,6 +27,8 @@ net.createServer(function (socket) {
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
 
   socket.write("hello world\n");
+    socket.write("hello world\n");
+      socket.write("hello world\n");
   console.log("Connected : "+socket.name);
  
   socket.on('data', function (data) {

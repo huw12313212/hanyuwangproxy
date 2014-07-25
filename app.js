@@ -19,8 +19,6 @@ net = require('net');
  
 // Keep track of the chat clients
 var servers = {};
-var singleServer ;
-
 // Start a TCP Server
 net.createServer(function (socket) {
  
@@ -53,7 +51,6 @@ console.log(socket.name +":"+data);
         socket.clients = [];
         console.log("Add Server \""+socket.id+"\"");
         servers["h"]=socket;
-        singleServer = socket;
       }
       else if(json.command == "ProxyToTarget")
       {
@@ -90,7 +87,8 @@ console.log(socket.name +":"+data);
       command.connectID = socket.id;
       command.data = data;
 
-      singleServer.write(data+"\n");
+      console.log("write to Server:"+data.data);
+      socket.server.write(data+"\n");
     }
     else if(socket.isServer)
     {
@@ -98,7 +96,7 @@ console.log(socket.name +":"+data);
       {
           socket.clients.forEach(function (client)
           {
-            console.log("[broadcast]write data:"+data.data);
+            console.log("[broadcast]write to client:"+data.data);
             client.write(data.data+"\n");
           });
       }

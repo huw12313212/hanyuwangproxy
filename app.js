@@ -59,7 +59,7 @@ net.createServer(function (socket) {
         socket.isServer = true;
         socket.clients = [];
         console.log("Add Server \""+socket.id+"\"");
-        servers["h"]=socket;
+        servers[socket.id.toString()]=socket;
       }
       else if(json.command == "ProxyToTarget")
       {
@@ -69,7 +69,7 @@ net.createServer(function (socket) {
         socket.proxy = true;
         socket.isClient = true;
         socket.targetID = json.targetID;
-        socket.server = servers["h"];
+        socket.server = servers[socket.targetID.toString()];
 
         socket.server.clients.push(socket);
 
@@ -133,7 +133,7 @@ net.createServer(function (socket) {
       {
         client.destroy();
       });
-       delete servers[socket];
+       delete servers[socket.id];
 
        console.log("servers:"+servers);
     }

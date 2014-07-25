@@ -81,7 +81,7 @@ console.log(socket.name +":"+data);
     }
     else if(socket.isClient)
     {
-      singleServer.write(data);
+      singleServer.write(data+"\n");
     }
     else if(socket.isServer)
     {
@@ -89,12 +89,12 @@ console.log(socket.name +":"+data);
       {
           socket.clients.forEach(function (client)
           {
-            client.write(data.data);
+            client.write(data.data+"\n");
           });
       }
       else if(data.proxyCommand == "sendTo")
       {
-          socket.clients[data.index].write(data.data);
+          socket.clients[data.index].write(data.data+"\n");
       }
       
     }

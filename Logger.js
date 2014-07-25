@@ -4,18 +4,15 @@ var Logger = {};
 
 module.exports = Logger;
 
-Logger.log = function(str)
+Logger.log = function(str,file)
 {
   console.log(str);
 
-  fs.appendFile('log.log', str, function (err) {
+  fs.appendFile(file, str+"\n", function (err) {
     if (err) 
       {
         console.log("Logger Error");
         throw err;
       }
   });
-
 }
-
-Logger.log("test");

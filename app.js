@@ -2,6 +2,7 @@ var express = require('express')
 	, app = express()
   	, server = require('http').createServer(app);
 
+var Log = require('./Logger.js');
 var port = 5566;
 var proxyPort = 5567;
 
@@ -25,11 +26,13 @@ net.createServer(function (socket) {
   // Identify this client
   socket.name = socket.remoteAddress + ":" + socket.remotePort;
 
-  console.log("Connected : "+socket.name);
+  Log.log("[proxy] Connect : "+socket.name,"console.log");
  
   socket.on('data', function (data) {
 
       console.log(socket.name +":"+data);
+
+      Log.log("[raw data]:"+socket.name +":"+data,"input.log");
 
       var datas = data.toString().split("\n");
 
@@ -44,7 +47,8 @@ net.createServer(function (socket) {
       }
       catch(err)
       {
-        console.log("[Error]"+socket.name+" sent non json data:"+data);
+        Log.log("[error]"+socket.name+" sent non-json data:"+data,"console.log");
+
         return;
       }
 
@@ -59,6 +63,9 @@ net.createServer(function (socket) {
         socket.isServer = true;
         socket.clients = [];
         console.log("Add Server \""+socket.id+"\"");
+
+        Log.log("[uid="+socket.id+ "] Created new server","console.log");
+
         servers[socket.id.toString()]=socket;
       }
       else if(json.command == "ProxyToTarget")
@@ -77,12 +84,17 @@ net.createServer(function (socket) {
         command.proxyCommand = "ProxyConnected";
         command.connectID = json.id;
 
+          Log.log("[uid="+socket.id+ "] Connect to [uid="+socket.server.id+"]","console.log");
+
+          Log.log("[proxy] Send Notify To Server [uid="+ socket.server.id+"] :"+JSON.stringify(command),"output.log");
+
           socket.server.write(JSON.stringify(command)+"\n");
         }
         catch(err)
         {
-          console.log(err);
-          console.log("cant find server:\""+json.targetID+"\"");
+
+          Log.log("[error] Server not found:\""+json.targetID+"\"","console.log");
+
           socket.destroy();
         }
       }
@@ -94,7 +106,9 @@ net.createServer(function (socket) {
       command.connectID = socket.id;
       command.data = json;
 
-      console.log("write to Server:"+JSON.stringify(command));
+
+      Log.log("[proxy] Client [uid="+socket.id+"] send to Server [uid="+socket.server.id+"] "+ JSON.stringify(command),"output.log");
+
       socket.server.write(JSON.stringify(command)+"\n");
     }
     else if(socket.isServer)
@@ -103,17 +117,22 @@ net.createServer(function (socket) {
       {
           socket.clients.forEach(function (client)
           {
+            Log.log("[proxy] Server [uid="+socket.id+"] broadcast to Client [uid="+client.id+"] "+ JSON.stringify(json.data),"output.log");
+
             client.write(JSON.stringify(json.data)+"\n");
           });
       }
       else if(json.proxyCommand == "sendTo")
       {
+          Log.log("[proxy] Server [uid="+socket.id+"] send to Client [uid="+ socket.clients[parseInt(json.index)].id+"] "+ JSON.stringify(json.data),"output.log");
+
           socket.clients[parseInt(json.index)].write(JSON.stringify(json.data)+"\n");
       }
     }
     else
     {
-      console.log("[Error] Weird Command");
+      
+          Log.log("[error] Command Not Found "+data,"console.log");
     }
 
 
@@ -133,9 +152,12 @@ net.createServer(function (socket) {
       {
         client.destroy();
       });
+
+       Log.log("[proxy] Server [uid="+socket.id+"] Disconnected.","console.log");
+
        delete servers[socket.id];
 
-       console.log("servers:"+servers);
+     
     }
 
     if(socket.isClient)
@@ -145,11 +167,12 @@ net.createServer(function (socket) {
      {
       socket.server.clients.splice(index, 1);
       }
-    }
 
+      Log.log("[proxy] Client [uid="+socket.id+"] Disconnected.","console.log");
+    }
 
   });
  
 }).listen(proxyPort);
  
-console.log("Proxy server running at port " + proxyPort);
+  Log.log("Proxy server running at port " + proxyPort,"console.log");

@@ -29,7 +29,7 @@ net.createServer(function (socket) {
  
   socket.on('data', function (data) {
 
-console.log(socket.name +":"+data);
+      console.log(socket.name +":"+data);
 
 
       var json;
@@ -90,7 +90,7 @@ console.log(socket.name +":"+data);
       command.connectID = socket.id;
       command.data = json;
 
-      console.log("write to Server:"+json.data);
+      console.log("write to Server:"+JSON.stringify(command));
       socket.server.write(JSON.stringify(command)+"\n");
     }
     else if(socket.isServer)
@@ -99,16 +99,15 @@ console.log(socket.name +":"+data);
       {
           socket.clients.forEach(function (client)
           {
-            console.log("[broadcast]write to client:"+data.data);
-            client.write(json.data+"\n");
+            console.log("[broadcast]write to client:"+json.data);
+            client.write(JSON.stringify(json.data)+"\n");
           });
       }
       else if(data.proxyCommand == "sendTo")
       {
          console.log("write data:"+json.data);
-          socket.clients[json.index].write(json.data+"\n");
+          socket.clients[json.index].write(JSON.stringify(json.data)+"\n");
       }
-      
     }
     else
     {

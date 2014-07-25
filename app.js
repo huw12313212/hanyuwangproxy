@@ -36,8 +36,9 @@ net.createServer(function (socket) {
       datas.forEach(function(data)
       {
 
-
-  var json;
+        if(data.length < 2) return;
+        
+       var json;
       try
       {
         json = JSON.parse(data);

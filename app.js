@@ -82,6 +82,12 @@ console.log(socket.name +":"+data);
     else if(socket.isClient)
     {
       console.log("write data:"+data);
+
+      var command={};
+      command.proxyCommand = "ReceiveFrom";
+      command.connectID = socket.id;
+      command.data = data;
+
       singleServer.write(data+"\n");
     }
     else if(socket.isServer)

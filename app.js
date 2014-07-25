@@ -30,7 +30,6 @@ net.createServer(function (socket) {
  
   socket.on('data', function (data) {
 
-      console.log(socket.name +":"+data);
 
       Log.log("[raw data]:"+socket.name +":"+data,"input.log");
 
@@ -62,7 +61,6 @@ net.createServer(function (socket) {
         socket.proxy = true;
         socket.isServer = true;
         socket.clients = [];
-        console.log("Add Server \""+socket.id+"\"");
 
         Log.log("[uid="+socket.id+ "] Created new server","console.log");
 
@@ -144,7 +142,6 @@ net.createServer(function (socket) {
  
   socket.on('end', function () {
 
-    console.log("Disconnected : "+socket.name);
 
     if(socket.isServer)
     {

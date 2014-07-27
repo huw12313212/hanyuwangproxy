@@ -3,6 +3,8 @@ var express = require('express')
   	, server = require('http').createServer(app);
 
 var Log = require('./Logger.js');
+Log.timestamp = true;
+
 var port = 5566;
 var proxyPort = 5567;
 
